@@ -6,22 +6,29 @@ class controllerInput {
 
     private $filePath;
     private $fileSource;
-    private $fileData;
+    private $aData = array();
 
     public function parseCSVFile() {
         if (!$this->getFilePath() || !file_exists($this->getFilePath())) {
             throw new Exception('Can\'t find the source file!');
         }
         $this->fileSource = file_get_contents($this->getFilePath());
-        $this->fileData = explode(",", $this->fileSource);
-        
-        echo '<pre>';
-        print_r($this->fileData);
-        echo '</pre>';
     }
-    
-    public function organiseData(){
-        
+
+    public function organiseData() {
+        $fileDataRows = explode("\n", $this->fileSource);
+        foreach ($fileDataRows as $row) {
+            $aColumns = explode(",", $row);
+            $iDataKey = intval($aColumns[0]);
+            $sDataValue = floatval($aColumns[1]);
+            if ($iDataKey && $sDataValue) {
+                $this->aData[$iDataKey] = $sDataValue;
+            }
+        }
+
+        echo '<pre>';
+        print_r($this->aData);
+        echo '</pre>';
     }
 
     public function getFilePath() {

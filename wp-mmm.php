@@ -5,4 +5,5 @@ require('controllerMaths.php');
 
 $oControllerInput = new controllerInput();
 $oControllerInput->setFilePath('testdata.csv');
-$aFileData = $oControllerInput->parseCSVFile();
+$oControllerInput->parseCSVFile();
+$oControllerInput->organiseData();
