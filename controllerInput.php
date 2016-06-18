@@ -28,47 +28,45 @@ class controllerInput {
     }
 
     public function sortFileDataDescending() {
-        if (!is_array($this->aData)) {
+        if (!is_array($this->getAData())) {
             throw new Exception('You need to organise the data first');
         }
 
-        echo '<pre>';
-        print_r($this->aData);
-        echo '</pre>';
-
-        $this->iDataAmount = count($this->aData);
-
+        $storedData = array();
+        $aData = array();
         
         
-        
-        
-        $sortedData = array();
-        foreach ($this->aData as $value) {
-            if (!$sortedData) {
-                array_push($sortedData, $value);
-                continue 1;
+        foreach ($this->getAData() as $value) {
+            if (isset($storedData[$value])) {
+                $storedData[$value]['value'] = $value;
+                $storedData[$value]['count'] ++;
+            } else {
+                $storedData = array_pad($storedData, ($value - 1), null);
+                $storedData[$value] = array(
+                    'count' => 1
+                    ,'value' => $value
+                    );
             }
-            foreach ($sortedData as $iKey => $sortedValue) {
-                if ($value >= $sortedValue) {
-                    if (isset($sortedData[$iKey + 1]) && $value < $sortedData[$iKey + 1]) {
-                        continue 2;
-                    } else {
-                        array_splice($sortedData, $iKey, 0, $value);
-                        continue 2;
+        }
+
+        $amountOfStoredData = count($storedData);
+
+        for ($i = 0; $i <= $amountOfStoredData; $i++) {
+            if (isset($storedData[$i]) && $storedData[$i]) {
+                if ($storedData[$i]['count'] > 1) {
+                    for ($j = 1; $j <= $storedData[$i]['count']; $j++) {
+                        array_push($aData, $storedData[$i]['value']);
                     }
-                } elseif ($value < $sortedValue) {
-                    if ($value < $sortedData[count($sortedData) - 1]) {
-                        array_push($sortedData, $value);
-                        continue 2;
-                    }
+                } else {
+                    array_push($aData, $storedData[$i]['value']);
                 }
             }
         }
 
-        echo '<pre>';
-        print_r($sortedData);
-        echo '</pre>';
+        $this->setAData($aData);
     }
+
+    /* Getters & Setters */
 
     public function getFilePath() {
         return $this->filePath;
@@ -78,12 +76,12 @@ class controllerInput {
         $this->filePath = $filePath;
     }
 
-    public function getFileData() {
-        return $this->fileData;
+    public function getAData() {
+        return $this->aData;
     }
 
-    public function setFileData($fileData) {
-        $this->fileData = $fileData;
+    public function setAData($aData) {
+        $this->aData = $aData;
     }
 
 }
