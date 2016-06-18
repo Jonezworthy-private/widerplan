@@ -7,3 +7,4 @@ $oControllerInput = new controllerInput();
 $oControllerInput->setFilePath('testdata.csv');
 $oControllerInput->parseCSVFile();
 $oControllerInput->organiseData();
+$oControllerInput->sortFileDataDescending();
