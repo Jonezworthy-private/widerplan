@@ -4,76 +4,77 @@
 
 class controllerInput {
 
-    private $filePath;
-    private $fileSource;
+    private $sFilePath;
+    private $sFileSource;
     private $aData = array();
     private $iDataAmount = 0;
 
     public function parseCSVFile() {
-        if (!$this->getFilePath() || !file_exists($this->getFilePath())) {
+        if (!$this->getSFilePath() || !file_exists($this->getSFilePath())) {
             throw new Exception('Can\'t find the source file!');
         }
-        $this->fileSource = trim(file_get_contents($this->getFilePath()));
+        $this->sFileSource = trim(file_get_contents($this->getSFilePath()));
     }
 
     public function organiseData() {
-        $fileDataRows = explode("\n", $this->fileSource);
-        foreach ($fileDataRows as $row) {
-            $aColumns = explode(",", $row);
+        $sFileDataRows = explode("\n", $this->sFileSource);
+        foreach ($sFileDataRows as $sDataRow) {
+            $aColumns = explode(",", $sDataRow);
             $iDataValue = floatval($aColumns[1]);
             if ($iDataValue) {
                 array_push($this->aData, $iDataValue);
             }
         }
+        unset($this->sFileSource);//No longer need it
     }
 
-    public function sortFileDataDescending() {
+    public function sortFileDataAscending() {
         if (!is_array($this->getAData())) {
             throw new Exception('You need to organise the data first');
         }
 
-        $storedData = array();
+        $aStoredData = array();
         $aData = array();
+        //This uses PHP's natural array sorting
         
-        
-        foreach ($this->getAData() as $value) {
-            if (isset($storedData[$value])) {
-                $storedData[$value]['value'] = $value;
-                $storedData[$value]['count'] ++;
+        foreach ($this->getAData() as $iValue) {
+            if (isset($aStoredData[$iValue])) {
+                $aStoredData[$iValue]['value'] = $iValue;
+                $aStoredData[$iValue]['count'] ++;
             } else {
-                $storedData = array_pad($storedData, ($value - 1), null);
-                $storedData[$value] = array(
+                $aStoredData = array_pad($aStoredData, ($iValue - 1), null);
+                $aStoredData[$iValue] = array(
                     'count' => 1
-                    ,'value' => $value
+                    ,'value' => $iValue
                     );
             }
         }
+        //This padded array contains all of the values but natrually sorted by PHP
+        //Now we will remove the gaps, leaving the data in order
+        $iAmountOfStoredData = count($aStoredData);
 
-        $amountOfStoredData = count($storedData);
-
-        for ($i = 0; $i <= $amountOfStoredData; $i++) {
-            if (isset($storedData[$i]) && $storedData[$i]) {
-                if ($storedData[$i]['count'] > 1) {
-                    for ($j = 1; $j <= $storedData[$i]['count']; $j++) {
-                        array_push($aData, $storedData[$i]['value']);
+        for ($i = 0; $i <= $iAmountOfStoredData; $i++) {
+            if (isset($aStoredData[$i]) && $aStoredData[$i]) {
+                if ($aStoredData[$i]['count'] > 1) {
+                    for ($j = 1; $j <= $aStoredData[$i]['count']; $j++) {
+                        array_push($aData, $aStoredData[$i]['value']);
                     }
                 } else {
-                    array_push($aData, $storedData[$i]['value']);
+                    array_push($aData, $aStoredData[$i]['value']);
                 }
             }
         }
-
         $this->setAData($aData);
     }
 
     /* Getters & Setters */
 
-    public function getFilePath() {
-        return $this->filePath;
+    public function getSFilePath() {
+        return $this->sFilePath;
     }
 
-    public function setFilePath($filePath) {
-        $this->filePath = $filePath;
+    public function setSFilePath($sFilePath) {
+        $this->sFilePath = $sFilePath;
     }
 
     public function getAData() {

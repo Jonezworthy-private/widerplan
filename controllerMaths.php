@@ -9,56 +9,70 @@ class controllerMaths {
     private $iComputedModal;
     private $iComputedFrequency;
 
-    public function arrayCalculateTotal() {
-        $fRunningTotal = 0;
-        if (!$this->getAInput() || !is_array($this->getAInput())) {
+    public function __construct($aInput) {
+        if (isset($aInput) && is_array($aInput)) {
+            $this->setAInput($aInput);
+        } else {
             throw new Exception('No array has been set');
         }
-        foreach ($this->getAInput() as $value) {
-            $fRunningTotal += floatval($value);
+    }
+
+    public function arrayCalculateTotal() {
+        $fRunningTotal = 0;
+        foreach ($this->getAInput() as $iValue) {
+            $fRunningTotal += floatval($iValue);
         }
 
-        return round($fRunningTotal, 2);
+        return round($fRunningTotal, 2); 
     }
 
     public function arrayCalculateMean() {
         $fArrayTotal = $this->getIComputedTotal() ? $this->getIComputedTotal() : $this->arrayCalculateTotal();
         $iAmountOfData = count($this->getAInput());
 
-        return $fArrayTotal / $iAmountOfData;
+        return round($fArrayTotal / $iAmountOfData, 2);
     }
 
     public function arrayCalculateMode() {
-        $aData = $this->getAInput();
         $aCounts = array();
-        $highestValue = 0;
-        $highestCount = 0;
-
-        foreach ($aData as $data) {
-            if (!isset($aCounts[$data])) {
-                $aCounts[$data] = 0;
+        $iHighestValue = 0;
+        $iHighestCount = 0;
+        //Take counts of each number
+        foreach ($this->getAInput() as $iValue) {
+            if (!isset($aCounts[$iValue])) {
+                $aCounts[$iValue] = 0;
             }
-            $aCounts[$data] ++;
+            $aCounts[$iValue] ++;
         }
-        foreach ($aCounts as $value => $count) {
-            if ($count > $highestCount) {
-                $highestValue = $value;
-                $highestCount = $count;
+        //Find the highest count
+        foreach ($aCounts as $iValue => $iCount) {
+            if ($iCount > $iHighestCount) {
+                $iHighestValue = $iValue;
+                $iHighestCount = $iCount;
             }
         }
 
-        $this->setIComputedModal($highestValue);
-        $this->setIComputedFrequency($highestCount);
+        $this->setIComputedModal($iHighestValue);
+        $this->setIComputedFrequency($iHighestCount);
+        return $iHighestValue;
+    }
+
+    public function arrayCalculateFrequency() {
+        //calculate mode does the work, run it if we need to
+        if (!$this->getIComputedFrequency()) {
+            $this->arrayCalculateMode();
+        }
+        return $this->getIComputedFrequency();
     }
 
     public function arrayCalculateMedian() {
-        $aData = $this->getAInput();
+        $aData = $this->getAInput(); //taking a reference
         $iAmountOfData = count($aData);
         if ($iAmountOfData % 2 === 0) {//if Odd
             $iArrayKeyMedian = ($iAmountOfData / 2) - 1;
             return $aData[$iArrayKeyMedian];
         } else {//Even
-            //Median point has 2 values, reutn the average of the two
+            //Median point has 2 values, return the average of the two
             $iArrayKeyMedianLow = ($iAmountOfData / 2) - 1;
             $iArrayKeyMedianHigh = ($iAmountOfData / 2) - 1;
 
@@ -95,11 +109,11 @@ class controllerMaths {
         $this->iComputedTotal = $iComputedTotal;
     }
 
-    public function getAInput() {
+    private function getAInput() {
         return $this->aInput;
     }
 
-    public function setAInput($aInput) {
+    private function setAInput($aInput) {
         $this->aInput = $aInput;
     }
 
