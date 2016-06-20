@@ -1,1 +1,2 @@
-# widerplan tech test
+# Wider Plan tech test
+Technical test for Wider Plan
