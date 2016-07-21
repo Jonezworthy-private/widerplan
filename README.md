@@ -4,25 +4,43 @@ Technical test for Wider Plan - I have included the technical test's instruction
 http://technical-test.widerplan.com/
 
 Mean, Median and Mode
+
 Objectives
+
 Produce a program following the criteria (provided below) which reliably calculates the correct results and outputs them in the expected format.
+
 Demonstrate your ability to solve the given problem proficiently in PHP.
+
 Implement an efficient sort algorithm in native PHP code.
+
 Create code which is sufficiently documented and readable to someone unfamiliar with your solution.
+
 Explanation of task
+
 We need to produce statistical reports for our clients analysing the values of the childcare vouchers purchased. As an example, consider the sample data below:
+
 
 Record	Voucher Amount
 1	144.00
+
 2	197.00
+
 3	76.00
+
 4	151.00
+
 5	233.00
+
 6	229.00
+
 7	70.00
+
 8	60.00
+
 9	71.00
+
 10	233.00
+
 From the sample data above, it is possible to produce the following statistics:
 
 Total value of payments:              £1,464.00
